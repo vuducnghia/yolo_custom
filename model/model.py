@@ -1,5 +1,10 @@
 import tensorflow as tf
-from tensorflow.keras.layers import Conv2D, MaxPooling2D, AveragePooling2D, BatchNormalization, ReLU, Concatenate
+from tensorflow.keras.layers import Conv2D, MaxPooling2D, AveragePooling2D, BatchNormalization, ReLU, Concatenate, \
+    Lambda
+from model.neck import Neck
+from model.head import Head
+from model.configs import ANCHORS, NUM_CLASS
+from model.utils import extract_box
 
 
 class Mish(tf.keras.layers.Layer):
@@ -75,7 +80,7 @@ class DenseBlock(tf.keras.layers.Layer):
         self.num_layers = num_layers
 
         self.ConvBlock = ConvBlock(growth_rate, scale_rate, activation)
-        self.TransitionLayer = TransitionLayer(growth_rate*num_layers, activation)
+        self.TransitionLayer = TransitionLayer(growth_rate * num_layers, activation)
 
     def call(self, x, **kwargs):
         for i in range(self.num_layers):
@@ -141,9 +146,26 @@ class CSPDenseNet(tf.keras.Model):
         x = self.csp_dense3(x)
 
         return x
-# https://github.com/pytorch/vision/blob/master/torchvision/models/densenet.py
-# https://github.com/taki0112/Densenet-Tensorflow
-# https://github.com/Knight825/models-pytorch/blob/master/CrossStagePartial/efm_module.py
-# https://github.com/Tianxiaomo/pytorch-YOLOv4/blob/master/train.py
-# https://github.com/flyyufelix/DenseNet-Keras/blob/master/custom_layers.py
-# https://github.com/sicara/tf2-yolov4/blob/master/tf2_yolov4/backbones/csp_darknet53.py
+
+
+# def ObjectDetection(input_shape=(448, 448, 3)):
+#     backbone = CSPDenseNet(input_shape)
+#     neck = Neck(input_shapes=backbone.output_shape)
+#     head = Head(input_shapes=neck.output_shape, anchors=ANCHORS, num_class=NUM_CLASS)
+#
+#     inputs = tf.keras.Input(shape=input_shape)
+#     lower_features = backbone(inputs)
+#     medium_features = neck(lower_features)
+#     output_1, output_2, output_3 = head(medium_features)
+#
+#     box1 = Lambda(lambda x: extract_box(x, anchors=ANCHORS[0], num_class=NUM_CLASS))(output_1)
+#     box2 = Lambda(lambda x: extract_box(x, anchors=ANCHORS[0], num_class=NUM_CLASS))(output_2)
+#     box3 = Lambda(lambda x: extract_box(x, anchors=ANCHORS[0], num_class=NUM_CLASS))(output_3)
+#
+#     model = tf.keras.Model(inputs=inputs, outputs=[box1, box2, box3], name="Object Detection")
+#
+#     return model
+
+# x = tf.random.uniform(shape=[1, 448, 448, 3])
+# o = ObjectDetection()
+# a = o(x)

@@ -40,6 +40,9 @@ def Neck(input_shapes):
     input_2 = tf.keras.Input(shape=filter(None, input_shapes[1]))  # (14,14,256)
     input_3 = tf.keras.Input(shape=filter(None, input_shapes[2]))  # (7,7,512)
 
+    """
+    output 3 (7 x 7)
+    """
     # x = ConvBlock(input_3, filters=512, kernel_size=1, activation='relu')
     x = ConvBlock(input_3, filters=256, kernel_size=1, activation='relu')
     x = ConvBlock(x, filters=256, kernel_size=3, activation='relu')
@@ -52,7 +55,7 @@ def Neck(input_shapes):
     output_3 = ConvBlock(x, filters=512, kernel_size=1, activation='relu')
 
     """
-    output 2
+    output 2 (14 x 14)
     """
     x = ConvBlock(output_3, filters=256, kernel_size=1, activation='relu')
     x = ConvBlock(x, filters=256, kernel_size=3, activation='relu')
@@ -65,7 +68,7 @@ def Neck(input_shapes):
     output_2 = ConvBlock(x, filters=256, kernel_size=3, activation='relu')
 
     """
-    output 1
+    output 1 (14 x 14)
     """
     x = ConvBlock(output_2, filters=64, kernel_size=1, activation='relu')
     x = ConvBlock(x, filters=128, kernel_size=3, activation='relu')
@@ -77,4 +80,4 @@ def Neck(input_shapes):
     x = ConvBlock(x, filters=64, kernel_size=1, activation='relu')
     output_1 = ConvBlock(x, filters=128, kernel_size=3, activation='relu')
 
-    return tf.keras.Model([input_1, input_2, input_3], [output_1, output_2, output_3], name='neck')
+    return tf.keras.Model([input_1, input_2, input_3], [output_3, output_2, output_1], name='neck')

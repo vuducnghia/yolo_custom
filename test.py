@@ -1,17 +1,12 @@
-from backbone import *
-from neck import Neck
-from head import Head
-from dataset import transform_target
 import tensorflow as tf
 import numpy as np
-import cv2
-
+# from model.model import ObjectDetection
 # m = CSPDenseNet(input_shape=(448, 448, 3))
 # # m.summary()
 # print(m.output_shape)
 # n = Neck(input_shapes=m.output_shape)
 # # n.summary()
-# h = Head(input_shapes=n.output_shape, anchors=YOLOV4_ANCHORS, num_classes=2)
+# h = Head(input_shapes=n.output_shape, anchors=YOLOV4_ANCHORS, num_class=2)
 # h.summary()
 
 
@@ -51,3 +46,21 @@ import cv2
 # a = tf.Variable([[1, 2, 0], [3, 4, 8], [6, 5, 9]])
 # x = tf.reverse(a, axis=[1,2,0])
 
+# dataset = tf.data.TextLineDataset("Vehicles/valid/_annotations.txt")
+# for line in dataset.take(5):
+#   print(line.numpy())
+
+
+# yolo_tiny_anchors = np.array([(10, 14), (23, 27), (37, 58),
+#                               (81, 82), (135, 169), (344, 319)],
+#                              np.float32)
+# yolo_tiny_anchor_masks = np.array([[3, 4, 5], [0, 1, 2]])
+#
+# loss = [yolo_tiny_anchors[mask] for mask in yolo_tiny_anchor_masks]
+# grid = tf.meshgrid(tf.range(3), tf.range(3))
+# a = tf.stack(grid, axis=-1)
+# b = tf.expand_dims(tf.stack(grid, axis=-1), axis=2)
+# xy_grid=tf.tile(tf.expand_dims(b, axis=0), [1, 1, 1, 3, 1])
+from model.dataset import load_dataset
+load_dataset('Vehicles/valid')
+# np.transpose
